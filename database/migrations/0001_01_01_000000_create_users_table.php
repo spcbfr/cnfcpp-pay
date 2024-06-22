@@ -14,17 +14,42 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->string('login')->unique();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
         });
-
-        Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary();
-            $table->string('token');
-            $table->timestamp('created_at')->nullable();
+        Schema::create('courses', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->integer('cost');
+            $table->string('start_date');
+            $table->string('end_date');
+            $table->string('institution_id');
+            $table->timestamps();
+        });
+        Schema::create('course_users', function (Blueprint $table) {
+            $table->id();
+            $table->string('course_id');
+            $table->string('user_id');
+            $table->boolean('is_paid')->default(false);
+            $table->string('payment_id')->nullable();
+            $table->timestamps();
+        });
+        Schema::create('states', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('admin_id')->nullable();
+            $table->timestamps();
+        });
+        Schema::create('institutions', function (Blueprint $table) {
+            $table->id();
+            $table->string('type');
+            $table->string('name');
+            $table->string('state_id');
+            $table->string('manager_name');
+            $table->string('manager_tel');
+            $table->timestamps();
         });
 
         Schema::create('sessions', function (Blueprint $table) {
@@ -34,6 +59,18 @@ return new class extends Migration
             $table->text('user_agent')->nullable();
             $table->longText('payload');
             $table->integer('last_activity')->index();
+        });
+        Schema::create('admin', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('region_name');
+            $table->string('tel');
+            $table->string('email')->unique();
+            $table->string('password');
+            $table->boolean('can_edit')->default(true);
+            $table->boolean('is_admin')->default(false);
+            $table->rememberToken();
+            $table->timestamps();
         });
     }
 
