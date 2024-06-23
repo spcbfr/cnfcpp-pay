@@ -1,5 +1,10 @@
 <?php
 
+use App\Models\Admin;
+use App\Models\Course;
+use App\Models\Institution;
+use App\Models\State;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -25,13 +30,13 @@ return new class extends Migration
             $table->integer('cost');
             $table->string('start_date');
             $table->string('end_date');
-            $table->string('institution_id');
+            $table->foreignIdFor(Institution::class);
             $table->timestamps();
         });
         Schema::create('course_users', function (Blueprint $table) {
             $table->id();
-            $table->string('course_id');
-            $table->string('user_id');
+            $table->foreignIdFor(Course::class);
+            $table->foreignIdFor(User::class);
             $table->boolean('is_paid')->default(false);
             $table->string('payment_id')->nullable();
             $table->timestamps();
@@ -39,14 +44,14 @@ return new class extends Migration
         Schema::create('states', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('admin_id')->nullable();
+            $table->foreignIdFor(Admin::class)->nullable();
             $table->timestamps();
         });
         Schema::create('institutions', function (Blueprint $table) {
             $table->id();
             $table->string('type');
             $table->string('name');
-            $table->string('state_id');
+            $table->foreignIdFor(State::class);
             $table->string('manager_name');
             $table->string('manager_tel');
             $table->timestamps();
@@ -60,7 +65,7 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
-        Schema::create('admin', function (Blueprint $table) {
+        Schema::create('admins', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('region_name');
@@ -68,7 +73,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->boolean('can_edit')->default(true);
-            $table->boolean('is_admin')->default(false);
+            $table->boolean('is_super')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });
@@ -79,6 +84,11 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('admins');
+        Schema::dropIfExists('institutions');
+        Schema::dropIfExists('states');
+        Schema::dropIfExists('course_users');
+        Schema::dropIfExists('courses');
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Admin;
 use App\Models\State;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -15,6 +16,15 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // User::factory(10)->create();
+
+        Admin::create([
+            'name' => 'Admin',
+            'email' => 'admin@admin.com',
+            'tel' => '0000000000',
+            'region_name' => 'All',
+            'password' => 'admin',
+            'is_super' => true,
+        ]);
 
         $states = [
             ['name' => 'Tunis'],

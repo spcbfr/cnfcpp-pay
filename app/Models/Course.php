@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\CourseType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -13,10 +12,8 @@ class Course extends Model
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class)
+            ->as('enrollment')
+            ->withPivot('is_paid', 'payment_id')->withTimestamps();
     }
-
-    protected $casts = [
-        'type' => CourseType::class,
-    ];
 }
