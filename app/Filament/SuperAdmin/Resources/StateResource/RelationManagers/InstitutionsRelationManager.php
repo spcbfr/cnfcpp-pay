@@ -6,21 +6,14 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Table;
 
 class InstitutionsRelationManager extends RelationManager
 {
     protected static string $relationship = 'Institutions';
 
-    public function form(Form $form): Form
-    {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-            ]);
-    }
 
     public function table(Table $table): Table
     {
@@ -28,19 +21,24 @@ class InstitutionsRelationManager extends RelationManager
             ->recordTitleAttribute('name')
             ->columns([
                 Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('manager_name'),
+                Tables\Columns\TextColumn::make('manager_tel')->copyable(),
+
             ])
             ->filters([
                 //
             ])
             ->headerActions([
+                CreateAction::make(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+
+                Action::make('details')
+                    ->label('Navigate')
+                    ->url(fn ($record): string => route('filament.superAdmin.resources.institutions.edit', ['record' => $record]))
+                    ->icon('heroicon-s-eye')
+                    ->color('info'),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
+            ->bulkActions([]);
     }
 }

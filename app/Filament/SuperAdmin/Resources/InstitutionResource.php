@@ -6,11 +6,16 @@ use App\Filament\SuperAdmin\Resources\InstitutionResource\Pages;
 use App\Filament\SuperAdmin\Resources\InstitutionResource\RelationManagers\CoursesRelationManager;
 use App\InstitutionType;
 use App\Models\Institution;
+use App\Models\Major;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set as FilamentSet;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Ramsey\Collection\Set;
 
 class InstitutionResource extends Resource
 {
@@ -26,10 +31,15 @@ class InstitutionResource extends Resource
                     ->columnSpan(2)
                     ->unique(ignoreRecord: true)
                     ->required(),
-                Forms\Components\Select::make('type')
-                    ->options(InstitutionType::class)
-                    ->required(),
-
+Forms\Components\Select::make('type')
+    ->options(InstitutionType::class)
+    ->live()
+    ->afterStateUpdated(fn (FilamentSet $set) => $set('majors', null) )
+    ->required(),
+Select::make('majors')
+    ->options(fn (Get $get) => Major::where('type', '=', $get('type'))->get()->pluck('name', 'id')->toArray())
+    ->multiple()
+    ->required(),
                 Forms\Components\Select::make('state_id')
                     ->required()
                     ->searchable()

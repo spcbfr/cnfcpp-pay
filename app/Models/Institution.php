@@ -20,6 +20,11 @@ class Institution extends Model
         return $this->belongsTo(State::class);
     }
 
+    public function majors()
+    {
+        return $this->belongsToMany(Major::class);
+    }
+
     protected $casts = [
         'type' => InstitutionType::class,
     ];

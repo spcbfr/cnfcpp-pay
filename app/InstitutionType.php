@@ -2,9 +2,11 @@
 
 namespace App;
 
+use Filament\Support\Contracts\HasColor;
+use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
 
-enum InstitutionType: string implements HasLabel
+enum InstitutionType: string implements HasColor, HasIcon, HasLabel
 {
     case FP = 'Formation Professionnelle';
     case FU = 'Formation Universitaire';
@@ -18,7 +20,16 @@ enum InstitutionType: string implements HasLabel
     {
         return match ($this) {
             self::FP => 'gray',
-            self::FU => 'blue',
+            self::FU => 'warning',
+
+        };
+    }
+
+    public function getIcon(): string
+    {
+        return match ($this) {
+            self::FU => 'heroicon-m-book-open',
+            self::FP => 'heroicon-s-wrench',
 
         };
     }
