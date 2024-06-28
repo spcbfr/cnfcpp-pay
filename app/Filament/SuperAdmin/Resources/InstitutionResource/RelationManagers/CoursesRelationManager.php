@@ -3,6 +3,7 @@
 namespace App\Filament\SuperAdmin\Resources\InstitutionResource\RelationManagers;
 
 use App\InstitutionType;
+use App\Models\Course;
 use App\Models\Major;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -11,10 +12,14 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\Rules\Unique;
 
 class CoursesRelationManager extends RelationManager
 {
     protected static string $relationship = 'courses';
+
+    protected static ?string $modelLabel = 'Session';
+    protected static ?string $title = 'Sessions';
 
     public function form(Form $form): Form
     {
@@ -22,6 +27,13 @@ class CoursesRelationManager extends RelationManager
 
             ->schema([
                 Forms\Components\Select::make('type')
+                    ->unique( modifyRuleUsing: function (Unique $rule, Get $get, RelationManager $livewire) {
+                        return $rule
+                            ->where('major_id', $get('major_id'))
+                            ->where('cycle', $get('cycle'))
+                            ->where('promo', $get('promo'))
+                            ->where('institution_id', $livewire->ownerRecord->id);
+                    })
                     ->native(false)
                     ->options(function (RelationManager $livewire): array {
                         $both = [
@@ -48,7 +60,7 @@ class CoursesRelationManager extends RelationManager
                     })
                     ->required(),
                 Forms\Components\Select::make('major_id')
-                    ->label('Select Major')
+                    ->label('Select Specialite')
                     ->live()
                     ->native(false)
                     ->options(function (RelationManager $livewire): array {
@@ -60,26 +72,28 @@ class CoursesRelationManager extends RelationManager
                     ->label('Promotion')
                     ->numeric()
                     ->required(),
-                Forms\Components\Radio::make('Cycle')
+                Forms\Components\Radio::make('cycle')
                     ->translateLabel()
                     ->required()
                     ->hintIcon('heroicon-m-question-mark-circle', tooltip: 'based on the № semesters of the chosen major')
                     ->options(function (?Model $record, Get $get) {
-                        $fullYears = collect(['S1-S2', 'S3-S4', 'S5-S6','S7-S8', 'S9-S10']);
 
-                        if(!is_null($get('major_id'))) {
-                            $nbr =  Major::find($get('major_id'))->number_of_semesters;
+                        $fullYears = collect(['S1-S2', 'S3-S4', 'S5-S6', 'S7-S8', 'S9-S10'])->mapWithKeys(function ($item) {
+                            return [$item => $item];
+                        });
+
+                        if (! is_null($get('major_id'))) {
+                            $nbr = Major::find($get('major_id'))->number_of_semesters;
 
                             $returned = $fullYears->take(intdiv($nbr, 2));
                             if ($nbr % 2 === 1) {
 
-                                $returned->push("S" . strval($nbr));
+                                $returned->put('S'.strval($nbr), 'S'.strval($nbr));
                             }
 
                             return $returned;
 
                         }
-
 
                     }),
                 Forms\Components\Radio::make('semester')
@@ -105,12 +119,12 @@ class CoursesRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('name')
             ->columns([
-                Tables\Columns\TextColumn::make('major.name'),
                 Tables\Columns\TextColumn::make('type'),
-                Tables\Columns\TextColumn::make('year'),
-                Tables\Columns\TextColumn::make('promo')->label('promotion')->prefix('Pr '),
+                Tables\Columns\TextColumn::make('major.name')->label('Specialite')->description(fn (Course $record) => 'Promo ' . $record->promo ),
+                Tables\Columns\TextColumn::make('year')->description(fn (Course $record) => 'Semester ' . $record->semester)->label('Demarage De Session'),
+                Tables\Columns\TextColumn::make('cycle')->label('Duree'),
                 Tables\Columns\TextColumn::make('cost')->suffix('TND'),
-            ])
+            ])->striped()
             ->filters([
                 //
             ])

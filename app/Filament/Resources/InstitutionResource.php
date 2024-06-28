@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\SuperAdmin\Resources;
+namespace App\Filament\Resources;
 
-use App\Filament\SuperAdmin\Resources\InstitutionResource\Pages;
+use App\Filament\Resources\InstitutionResource\Pages;
 use App\Filament\SuperAdmin\Resources\InstitutionResource\RelationManagers\CoursesRelationManager;
 use App\InstitutionType;
 use App\Models\Institution;
@@ -15,12 +15,13 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Ramsey\Collection\Set;
 
 class InstitutionResource extends Resource
 {
     protected static ?string $model = Institution::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-building-office';
+    protected static ?string $navigationIcon = 'heroicon-o-building-library';
 
     public static function form(Form $form): Form
     {
@@ -30,7 +31,7 @@ class InstitutionResource extends Resource
                     ->columnSpan(2)
                     ->unique(ignoreRecord: true)
                     ->required(),
-                Forms\Components\Select::make('type')
+                Select::make('type')
                     ->options(InstitutionType::class)
                     ->live()
                     ->afterStateUpdated(fn (FilamentSet $set) => $set('majors', null))
@@ -47,7 +48,7 @@ class InstitutionResource extends Resource
                     ->required()
                     ->searchable()
                     ->preload()
-                    ->relationship(name: 'state', titleAttribute: 'name'),
+                    ->relationship(name: 'state', titleAttribute: 'name', modifyQueryUsing: fn (Builder $query) => $query->where('admin_id', auth()->id() )),
                 Forms\Components\Fieldset::make('Manager')
                     ->schema([
                         Forms\Components\TextInput::make('manager_name')
@@ -63,6 +64,12 @@ class InstitutionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function (Builder $query) {
+                return $query->whereHas('state.admin', function (Builder $filter) {
+                    $filter->where('id', auth()->id());
+                });
+
+            })
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
@@ -100,7 +107,7 @@ class InstitutionResource extends Resource
     public static function getRelations(): array
     {
         return [
-            CoursesRelationManager::class,
+            CoursesRelationManager::class
         ];
     }
 

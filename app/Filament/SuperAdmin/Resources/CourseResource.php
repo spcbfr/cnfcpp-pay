@@ -25,8 +25,10 @@ class CourseResource extends Resource
     {
         return static::getModel()::count();
     }
+    protected static ?string $modelLabel = 'Session';
 
-    protected static ?string $navigationBadgeTooltip = 'The number of courses';
+    protected static ?string $navigationBadgeTooltip = 'The number of sessions';
+
     public static function form(Form $form): Form
     {
         return $form
@@ -73,22 +75,21 @@ class CourseResource extends Resource
                     ->label('Promotion')
                     ->numeric()
                     ->required(),
-                Forms\Components\Radio::make('Cycle')
+                Forms\Components\Radio::make('cycle')
                     ->translateLabel()
                     ->required()
                     ->hintIcon('heroicon-m-question-mark-circle', tooltip: 'based on the № semesters of the chosen major')
                     ->options(function (?Model $record, Get $get) {
-                        $fullYears = collect(['S1-S2', 'S3-S4', 'S5-S6','S7-S8', 'S9-10']);
+                        $fullYears = collect(['S1-S2', 'S3-S4', 'S5-S6', 'S7-S8', 'S9-10']);
                         $halfYears = collect(['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7']);
 
-                        $nbr =  Major::find($get('major_id'))->number_of_semesters;
-
-
+                        $nbr = Major::find($get('major_id'))->number_of_semesters;
 
                         $returned = $fullYears->take(intdiv($nbr, 2));
                         if ($nbr % 2 === 1) {
-                            $returned->push($halfYears[$nbr-1]);
+                            $returned->push($halfYears[$nbr - 1]);
                         }
+
                         return $returned;
 
                     }),
@@ -109,6 +110,7 @@ class CourseResource extends Resource
                     ->suffix('TND'),
             ])->columns(3);
     }
+
     public static function table(Table $table): Table
     {
         return $table

@@ -7,6 +7,7 @@ use App\Models\State;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\App;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,6 +17,18 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // User::factory(10)->create();
+
+        if(App::isLocal()) {
+            Admin::create([
+                'name' => 'Esseyed',
+                'email' => 'esseyed@gmail.com',
+                'tel' => '0000000000',
+                'region_name' => 'IPST Ben Arous',
+                'password' => 'admin',
+                'is_super' => false,
+            ]);
+        }
+
 
         Admin::create([
             'name' => 'Admin',
