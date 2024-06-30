@@ -10,10 +10,10 @@ use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
-use Livewire\Component as Livewire;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rules\Unique;
+use Livewire\Component as Livewire;
 
 class CoursesRelationManager extends RelationManager
 {

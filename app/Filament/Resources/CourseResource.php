@@ -8,8 +8,6 @@ use App\InstitutionType;
 use App\Models\Course;
 use App\Models\Major;
 use Filament\Forms;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Resources\Resource;
@@ -25,9 +23,7 @@ class CourseResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-presentation-chart-bar';
 
-
     protected static ?string $modelLabel = 'Session';
-
 
     protected static ?string $navigationBadgeTooltip = 'The number of sessions';
 
@@ -167,7 +163,7 @@ class CourseResource extends Resource
     public static function getRelations(): array
     {
         return [
-            UsersRelationManager::class
+            UsersRelationManager::class,
         ];
     }
 

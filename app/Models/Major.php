@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use App\InstitutionType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\InstitutionType;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Major extends Model
@@ -13,8 +13,9 @@ class Major extends Model
     {
         return $this->belongsToMany(Institution::class);
     }
+
     protected $casts = [
-        'type' => InstitutionType::class
+        'type' => InstitutionType::class,
     ];
 
     use HasFactory;

@@ -10,11 +10,13 @@ use Illuminate\Contracts\Support\Htmlable;
 class EditInstitution extends EditRecord
 {
     protected static string $resource = InstitutionResource::class;
+
     public function getTitle(): string|Htmlable
     {
-    //    return 'Edit Document ' . $this->record->id;
-        return  'Modifier '. $this->record->name;
+        //    return 'Edit Document ' . $this->record->id;
+        return 'Modifier '.$this->record->name;
     }
+
     protected $listeners = ['refreshInstitution' => '$refresh'];
 
     protected function getHeaderActions(): array

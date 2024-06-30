@@ -17,9 +17,11 @@ class AdminResource extends Resource
     use RedirectsToIndex;
 
     protected static ?string $model = Admin::class;
-    protected static ?string $modelLabel = "Administateur";
+
+    protected static ?string $modelLabel = 'Administateur';
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
+
     protected static ?string $navigationGroup = 'Parametres';
 
     public static function form(Form $form): Form

@@ -2,10 +2,9 @@
 
 use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
-use function Pest\Laravel\get;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('dashboard');
 })->middleware('auth');
 
 Route::post('/login', [LoginController::class, 'authenticate']);

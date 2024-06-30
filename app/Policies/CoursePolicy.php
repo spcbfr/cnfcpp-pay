@@ -2,15 +2,16 @@
 
 namespace App\Policies;
 
-use App\Models\Course;
 use App\Models\Admin as User;
-use Illuminate\Auth\Access\Response;
+use App\Models\Course;
 
 class CoursePolicy
 {
-    public function before(User $user): bool|null {
+    public function before(User $user): ?bool
+    {
         return $user->isSuper() ? true : null;
     }
+
     /**
      * Determine whether the user can view any models.
      */

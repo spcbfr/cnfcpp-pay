@@ -2,9 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\State;
 use App\Models\Admin as User;
-use Illuminate\Auth\Access\Response;
+use App\Models\State;
 
 class StatePolicy
 {

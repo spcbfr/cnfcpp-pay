@@ -2,10 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\Major;
 use App\Models\Admin as User;
-use Illuminate\Auth\Access\Response;
-use function PHPUnit\Framework\returnSelf;
+use App\Models\Major;
 
 class MajorPolicy
 {
@@ -20,10 +18,7 @@ class MajorPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Major $major): bool
-    {
-
-    }
+    public function view(User $user, Major $major): bool {}
 
     /**
      * Determine whether the user can create models.

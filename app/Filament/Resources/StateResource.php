@@ -21,6 +21,7 @@ class StateResource extends Resource
     protected static ?string $model = State::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-map';
+
     protected static ?string $navigationGroup = 'Parametres';
 
     protected static ?string $modelLabel = 'Governorats';

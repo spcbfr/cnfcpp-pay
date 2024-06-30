@@ -2,12 +2,12 @@
 
 namespace App\Policies;
 
-use App\Models\Institution;
 use App\Models\Admin as User;
+use App\Models\Institution;
 
 class InstitutionPolicy
 {
-    public function before(User $user): bool|null
+    public function before(User $user): ?bool
     {
         return $user->isSuper() ? true : null;
     }
@@ -51,5 +51,4 @@ class InstitutionPolicy
     {
         return $institution->state?->admin?->id === $user->id;
     }
-
 }

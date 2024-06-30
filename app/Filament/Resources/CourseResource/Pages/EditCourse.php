@@ -5,7 +5,6 @@ namespace App\Filament\Resources\CourseResource\Pages;
 use App\Filament\Resources\CourseResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
-use Illuminate\Database\Eloquent\Model;
 
 class EditCourse extends EditRecord
 {

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Imports\UserImporter;
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
 use Filament\Forms;
@@ -11,13 +12,13 @@ use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Actions\ImportAction;
 use Filament\Tables\Table;
-use App\Filament\Imports\UserImporter;
 use Illuminate\Validation\Rules\File;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
-    protected static ?string $modelLabel = "Utilisateur";
+
+    protected static ?string $modelLabel = 'Utilisateur';
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
@@ -59,7 +60,7 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('first_name')
                     ->label('Nom & Prenom')
                     ->weight(FontWeight::SemiBold)
-                    ->description(fn (User $record) =>  $record->last_name)
+                    ->description(fn (User $record) => $record->last_name)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('cin')
                     ->label('CIN')
@@ -81,9 +82,9 @@ class UserResource extends Resource
                 ImportAction::make('importUsers')
                     ->importer(UserImporter::class)
                     ->fileRules([
-                        File::types(['csv','txt'])
+                        File::types(['csv', 'txt']),
                     ])
-                    ->maxRows(1000)
+                    ->maxRows(1000),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

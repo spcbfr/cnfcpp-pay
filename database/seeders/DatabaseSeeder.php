@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        if(App::isLocal()) {
+        if (App::isLocal()) {
             Admin::create([
                 'name' => 'Esseyed',
                 'email' => 'esseyed@gmail.com',
@@ -28,7 +28,6 @@ class DatabaseSeeder extends Seeder
                 'is_super' => false,
             ]);
         }
-
 
         Admin::create([
             'name' => 'Admin',

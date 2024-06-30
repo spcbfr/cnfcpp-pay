@@ -7,19 +7,13 @@ use App\Models\User;
 use Closure;
 use Filament\Forms;
 use Filament\Forms\Components\TagsInput;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
-use Filament\Notifications\Collection;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\AssociateAction;
-use Filament\Tables\Actions\AttachAction;
 use Filament\Tables\Actions\DetachAction;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class UsersRelationManager extends RelationManager
 {
@@ -65,7 +59,7 @@ class UsersRelationManager extends RelationManager
             ])
             ->headerActions([
                 Action::make('Attach')
-                    ->form( [
+                    ->form([
                         TagsInput::make('ids')
                             ->label('IDs')
                             ->validationAttribute('IDs')
@@ -75,12 +69,12 @@ class UsersRelationManager extends RelationManager
                                     $records = User::whereIn('cin', $value)->pluck('cin')->toArray();
                                     $nonExistantIds = array_diff($value, $records);
 
-                                    if(!empty($nonExistantIds)) {
-                                        $fail('The following :attribute don\'t exist in the the database: ' . implode(', ',$nonExistantIds));
+                                    if (! empty($nonExistantIds)) {
+                                        $fail('The following :attribute don\'t exist in the the database: '.implode(', ', $nonExistantIds));
                                     }
                                 },
                             ])
-                            ->splitKeys([' '])
+                            ->splitKeys([' ']),
                     ])->action(function (array $data, RelationManager $livewire) {
 
                         $ids = User::whereIn('cin', $data['ids'])->pluck('id')->toArray();
@@ -89,13 +83,13 @@ class UsersRelationManager extends RelationManager
 
                         $course->users()->syncWithoutDetaching($ids);
 
-                    })
+                    }),
             ])
             ->actions([
-                DetachAction::make()
+                DetachAction::make(),
             ])
             ->bulkActions([
-                    Tables\Actions\DetachBulkAction::make(),
+                Tables\Actions\DetachBulkAction::make(),
             ]);
     }
 }

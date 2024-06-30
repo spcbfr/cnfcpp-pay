@@ -6,7 +6,9 @@ use App\Filament\Resources\InstitutionResource\Pages;
 use App\Filament\Resources\InstitutionResource\RelationManagers\CoursesRelationManager;
 use App\InstitutionType;
 use App\Models\Institution;
+use App\Models\Major;
 use Filament\Forms;
+use Filament\Forms\Components\Component;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
@@ -14,7 +16,6 @@ use Filament\Forms\Get;
 use Filament\Forms\Set as FilamentSet;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Forms\Components\Component;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -41,11 +42,11 @@ class InstitutionResource extends Resource
                     ->hintIcon(fn (Component $component) => $component->isDisabled() ? 'heroicon-m-question-mark-circle' : null)
                     ->hintColor('danger')
                     ->hintIconTooltip(fn (Component $component) => $component->isDisabled() ? __("You can't change an institution's type if it has sessions created") : null)
-                    ->disabled(fn (?Model $record, string $operation) => $operation === "create" ? false : $record->courses()->count() !== 0 )
+                    ->disabled(fn (?Model $record, string $operation) => $operation === 'create' ? false : $record->courses()->count() !== 0)
                     ->required(),
                 Select::make('majors')
                     ->label('Spécialités')
-                    ->disabled(fn (?Model $record, string $operation) => $operation === "create" ? false : $record->courses()->count() !== 0 )
+                    ->disabled(fn (?Major $record, string $operation) => $operation === 'create' ? false : $record->courses()->count() !== 0)
                     ->hintIcon(fn (Component $component) => $component->isDisabled() ? 'heroicon-m-question-mark-circle' : null)
                     ->hintColor('danger')
                     ->hintIconTooltip(fn (Component $component) => $component->isDisabled() ? __("You can't change an institution's major if it has sessions created") : null)
