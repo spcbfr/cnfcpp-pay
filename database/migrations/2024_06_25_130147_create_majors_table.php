@@ -21,8 +21,8 @@ return new class extends Migration
             $table->timestamps();
         });
         Schema::create('institution_major', function (Blueprint $table) {
-            $table->foreignIdFor(Major::class)->constrained();
-            $table->foreignIdFor(Institution::class)->constrained();
+            $table->foreignIdFor(Major::class)->constrained()->restrictOnDelete();
+            $table->foreignIdFor(Institution::class)->constrained()->restrictOnDelete();
         });
 
     }

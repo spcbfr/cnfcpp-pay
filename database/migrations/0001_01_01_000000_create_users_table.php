@@ -30,13 +30,13 @@ return new class extends Migration
             $table->integer('cost');
             $table->string('start_date');
             $table->string('end_date');
-            $table->foreignIdFor(Institution::class)->constrained();
+            $table->foreignIdFor(Institution::class)->constrained()->restrictOnDelete();
             $table->timestamps();
         });
         Schema::create('course_users', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Course::class)->constrained();
-            $table->foreignIdFor(User::class)->constrained();
+            $table->foreignIdFor(Course::class)->constrained()->restrictOnDelete();
+            $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
             $table->boolean('is_paid')->default(false);
             $table->string('payment_id')->nullable();
             $table->timestamps();
@@ -44,14 +44,14 @@ return new class extends Migration
         Schema::create('states', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignIdFor(Admin::class)->nullable()->constrained();
+            $table->foreignIdFor(Admin::class)->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
         });
         Schema::create('institutions', function (Blueprint $table) {
             $table->id();
             $table->string('type');
             $table->string('name');
-            $table->foreignIdFor(State::class)->constrained();
+            $table->foreignIdFor(State::class)->constrained()->restrictOnDelete();
             $table->string('manager_name');
             $table->string('manager_tel');
             $table->timestamps();
