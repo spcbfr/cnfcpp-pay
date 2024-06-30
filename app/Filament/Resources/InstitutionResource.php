@@ -46,7 +46,7 @@ class InstitutionResource extends Resource
                     ->required(),
                 Select::make('majors')
                     ->label('Spécialités')
-                    ->disabled(fn (?Major $record, string $operation) => $operation === 'create' ? false : $record->courses()->count() !== 0)
+                    ->disabled(fn (?Model $record, string $operation) => $operation === 'create' ? false : $record->courses()->count() !== 0)
                     ->hintIcon(fn (Component $component) => $component->isDisabled() ? 'heroicon-m-question-mark-circle' : null)
                     ->hintColor('danger')
                     ->hintIconTooltip(fn (Component $component) => $component->isDisabled() ? __("You can't change an institution's major if it has sessions created") : null)

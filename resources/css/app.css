@@ -1,3 +1,24 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+table {
+    @apply mt-2 w-full table-auto border-hidden bg-gray-50 rounded-lg border-collapse;
+}
+
+thead {
+    @apply rounded-t-lg bg-gray-100;
+}
+
+table > tbody td:first-child,
+table > thead th:first-child {
+    @apply pl-4;
+}
+
+table > tbody td:last-child,
+table > thead th:last-child {
+    @apply pr-4;
+}
+table td,
+table th {
+    @apply p-2 py-4 text-left border-b-[1px] border-stone-300;
+}
