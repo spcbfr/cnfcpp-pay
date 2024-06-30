@@ -3,46 +3,28 @@
 namespace App\Livewire;
 
 use App\Models\Course;
-use GuzzleHttp\Client;
+use Http;
+use Illuminate\Http\RedirectResponse;
 use Livewire\Component;
 
 class ListCourses extends Component
 {
-    public function pay(Course $course)
+    public function pay(Course $course): RedirectResponse
     {
-        $client = new Client([
-            'base_uri' => 'https://test.clictopay.com/payment/rest',
-            'timeout' => 10,
-            'headers' => [
-                'Content-Type' => 'application/x-www-form-urlencoded',
-            ],
+        $res = Http::asForm()->post('https://test.clictopay.com/payment/rest/register.do', [
+            'userName' => 'username',
+            'password' => 'password',
+            'orderNumber' => $course->id,
+            'amount' => $course->price * 100,
         ]);
 
-        $response = $client->post('/register.do', [
-            'form_params' => [
-                'userName' => '123456789',
-                'password' => '6E2OCk4sx',
-                'orderNumber' => $course->id,
-                'amount' => $course->price * 100, // Convert to cents
-                'currency' => 788,
-                'returnUrl' => 'https://yourwebsite.com/success',
-                'language' => 'fr',
-            ],
-        ]);
-        dd($response);
+        $data = json_decode($res->body(), true);
 
-        if ($response->getStatusCode() === 200) {
-            $responseData = json_decode($response->getBody(), true);
-            $orderId = $responseData['orderId'];
-            $formUrl = $responseData['formUrl'];
-
-            // Redirect the user to the payment form
-            return redirect()->away($formUrl);
+        if ($data['errorCode'] === 0) {
+            return redirect()->away($data['formUrl']);
         }
+        session()->flash('failed_req', 'Your payment request failed, please try again later, REASON: '.$data['errorMessage']);
 
-        // Handle the error response
-        if ($response->getStatusCode() !== 200) {
-            redirect('/login');
-        }
+        return back();
     }
 }
