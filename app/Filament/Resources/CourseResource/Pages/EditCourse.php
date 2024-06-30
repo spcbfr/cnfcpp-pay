@@ -18,6 +18,8 @@ class EditCourse extends EditRecord
         return $this->record->institution->name;
     }
 
+    protected $listeners = ['refreshCourse' => '$refresh'];
+
     protected function getHeaderActions(): array
     {
         return [

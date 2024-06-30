@@ -32,7 +32,7 @@ class InstitutionsRelationManager extends RelationManager
 
                 Action::make('details')
                     ->label('Navigate')
-                    ->url(fn ($record): string => route('filament.superAdmin.resources.institutions.edit', ['record' => $record]))
+                    ->url(fn ($record): string => route('filament.admin.resources.institutions.edit', ['record' => $record]))
                     ->icon('heroicon-s-eye')
                     ->color('info'),
             ])

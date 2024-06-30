@@ -8,12 +8,15 @@ use Closure;
 use Filament\Forms;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\DetachAction;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
+use Livewire\Component as Livewire;
 
 class UsersRelationManager extends RelationManager
 {
@@ -86,10 +89,28 @@ class UsersRelationManager extends RelationManager
                     }),
             ])
             ->actions([
-                DetachAction::make(),
+                DetachAction::make()
+                    ->before(function (DetachAction $action, ?Model $record) {
+                        if ($record->is_paid) {
+
+                            Notification::make()
+                                ->danger()
+                                ->title('Failed to detach!')
+                                ->body('You can\'t detach a user that has paid the session fees')
+                                ->persistent()
+                                ->send();
+                            $action->cancel();
+                        }
+                    })
+                    ->after(function (Livewire $livewire) {
+                        $livewire->dispatch('refreshCourse');
+                    }),
             ])
             ->bulkActions([
-                Tables\Actions\DetachBulkAction::make(),
+                // Tables\Actions\DetachBulkAction::make()
+                //     ->after(function (Livewire $livewire) {
+                //         $livewire->dispatch('refreshCourse');
+                //     }),
             ]);
     }
 }

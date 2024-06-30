@@ -113,7 +113,10 @@ class CourseResource extends Resource
                 Forms\Components\TextInput::make('cost')
                     ->required()
                     ->suffix('TND'),
-            ])->columns(3);
+            ])->columns(3)->disabled(function (?Model $record) {
+                return $record?->users()->count() !== 0;
+
+            });
     }
 
     public static function table(Table $table): Table
