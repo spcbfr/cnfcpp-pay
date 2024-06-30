@@ -19,8 +19,8 @@ enum InstitutionType: string implements HasColor, HasIcon, HasLabel
     public function getColor(): string|array|null
     {
         return match ($this) {
-            self::FP => 'gray',
-            self::FU => 'warning',
+            self::FP => 'teal',
+            self::FU => 'info',
 
         };
     }

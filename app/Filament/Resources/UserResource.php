@@ -17,6 +17,7 @@ use Illuminate\Validation\Rules\File;
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
+    protected static ?string $modelLabel = "Utilisateur";
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
@@ -61,10 +62,12 @@ class UserResource extends Resource
                     ->description(fn (User $record) =>  $record->last_name)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('cin')
+                    ->label('CIN')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('gsm')
+                    ->label('GSM')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

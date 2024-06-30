@@ -13,8 +13,10 @@ class EditInstitution extends EditRecord
     public function getTitle(): string|Htmlable
     {
     //    return 'Edit Document ' . $this->record->id;
-        return  'Edit '. $this->record->name;
+        return  'Modifier '. $this->record->name;
     }
+    protected $listeners = ['refreshInstitution' => '$refresh'];
+
     protected function getHeaderActions(): array
     {
         return [

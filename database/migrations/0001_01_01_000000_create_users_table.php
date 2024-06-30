@@ -30,13 +30,13 @@ return new class extends Migration
             $table->integer('cost');
             $table->string('start_date');
             $table->string('end_date');
-            $table->foreignIdFor(Institution::class);
+            $table->foreignIdFor(Institution::class)->constrained();
             $table->timestamps();
         });
         Schema::create('course_users', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Course::class);
-            $table->foreignIdFor(User::class);
+            $table->foreignIdFor(Course::class)->constrained();
+            $table->foreignIdFor(User::class)->constrained();
             $table->boolean('is_paid')->default(false);
             $table->string('payment_id')->nullable();
             $table->timestamps();
@@ -44,14 +44,14 @@ return new class extends Migration
         Schema::create('states', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignIdFor(Admin::class)->nullable();
+            $table->foreignIdFor(Admin::class)->nullable()->constrained();
             $table->timestamps();
         });
         Schema::create('institutions', function (Blueprint $table) {
             $table->id();
             $table->string('type');
             $table->string('name');
-            $table->foreignIdFor(State::class);
+            $table->foreignIdFor(State::class)->constrained();
             $table->string('manager_name');
             $table->string('manager_tel');
             $table->timestamps();

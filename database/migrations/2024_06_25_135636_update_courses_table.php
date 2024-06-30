@@ -14,7 +14,7 @@ return new class extends Migration
     {
         //
         Schema::table('courses', function (Blueprint $table) {
-            $table->foreignIdFor(Major::class);
+            $table->foreignIdFor(Major::class)->constrained();
             $table->smallInteger('promo');
         });
     }

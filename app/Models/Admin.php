@@ -16,17 +16,16 @@ class Admin extends User implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
-        if ($panel->getId() === 'admin') {
-            return ! $this->is_super;
-        }
-        if ($panel->getId() === 'superAdmin') {
-            return $this->is_super;
-        }
+        return true;
     }
 
     public function states(): HasMany
     {
         return $this->hasMany(State::class);
+    }
+    public function isSuper(): bool
+    {
+        return $this->is_super;
     }
 
     protected $hidden = [
