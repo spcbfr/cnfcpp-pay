@@ -1,0 +1,21 @@
+{
+    "Name": "Nom",
+    "Settings": "Parametres",
+    "Major": "Specialite",
+    "Cost": "Prix",
+    "Year": "Annee",
+    "State": "Governorat",
+    "Created at": "Créée le",
+    "Updated at": "Mis à jour le",
+    "Manager name": "Directeur",
+    "Manager tel": "Tel Num de Directeur",
+    "Region name": "Region",
+    "Can edit": "Auto-géré",
+    "Phone number": "Numero de telephone",
+    "You can't change an institution's type if it has sessions created": "Vous ne pouvez pas modifier le type d'un établissement si des sessions ont été créées.",
+    "You can't change an institution's major if it has sessions created": "Vous ne pouvez pas modifier la specialite d'un établissement si des sessions ont été créées.",
+    "Number of semesters": "№ de semestres",
+    "Select a Major": "Choisi une spécialité",
+    "Password": "Mot de passe",
+    "Semester": "Semestre"
+}
