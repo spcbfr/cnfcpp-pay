@@ -10,6 +10,7 @@ use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rules\Unique;
@@ -75,8 +76,7 @@ class CoursesRelationManager extends RelationManager
                     ->numeric()
                     ->required(),
                 Forms\Components\Radio::make('cycle')
-                    ->translateLabel()
-                    ->required()
+                    ->translateLabel()->required()
                     ->hintIcon('heroicon-m-question-mark-circle', tooltip: 'based on the № semesters of the chosen major')
                     ->options(function (?Model $record, Get $get) {
 
@@ -145,6 +145,12 @@ class CoursesRelationManager extends RelationManager
                     ->after(function (Livewire $livewire) {
                         $livewire->dispatch('refreshInstitution');
                     }),
+
+                Action::make('details')
+                    ->label('Navigate')
+                    ->url(fn ($record): string => route('filament.admin.resources.courses.edit', ['record' => $record]))
+                    ->icon('heroicon-s-eye')
+                    ->color('info'),
 
             ])
             ->bulkActions([
