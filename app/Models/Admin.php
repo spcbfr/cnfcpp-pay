@@ -33,11 +33,6 @@ class Admin extends User implements FilamentUser
         return $this->hasMany(State::class);
     }
 
-    public function isSuper(): bool
-    {
-        return $this->is_super;
-    }
-
     protected $hidden = [
         'password',
         'remember_token',

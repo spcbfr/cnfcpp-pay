@@ -12,20 +12,23 @@ class MajorPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isSuper();
+        return $user->can('view-any major');
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Major $major): bool {}
+    public function view(User $user, Major $major): bool
+    {
+        return $user->can('view major');
+    }
 
     /**
      * Determine whether the user can create models.
      */
     public function create(User $user): bool
     {
-        return $user->isSuper();
+        return $user->can('create major');
     }
 
     /**
@@ -33,7 +36,7 @@ class MajorPolicy
      */
     public function update(User $user, Major $major): bool
     {
-        return $user->isSuper();
+        return $user->can('update major');
     }
 
     /**
@@ -41,7 +44,7 @@ class MajorPolicy
      */
     public function delete(User $user, Major $major): bool
     {
-        return $user->isSuper();
+        return $user->can('delete major');
     }
 
     /**
@@ -49,7 +52,7 @@ class MajorPolicy
      */
     public function restore(User $user, Major $major): bool
     {
-        //
+        return $user->can('restore major');
     }
 
     /**
@@ -57,6 +60,6 @@ class MajorPolicy
      */
     public function forceDelete(User $user, Major $major): bool
     {
-        //
+        return $user->can('force-delete major');
     }
 }

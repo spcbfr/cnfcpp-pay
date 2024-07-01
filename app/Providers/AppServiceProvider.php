@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Models\Admin;
+use App\Policies\RolePolicy;
 use Filament\Forms\Components\Field;
+use Filament\Infolists\Components\Entry;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
 use Filament\Tables\Columns\Column;
@@ -13,6 +15,7 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
+use Spatie\Permission\Models\Role;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,13 +24,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
         FilamentColor::register([
             'teal' => Color::Teal,
         ]);
         $this->app->bind(Authenticatable::class, Admin::class);
         Field::configureUsing(function (Field $field): void {
             $field->translateLabel();
+        });
+
+        Entry::configureUsing(function (Entry $entry): void {
+            $entry->translateLabel();
         });
         Column::configureUsing(function (Column $column): void {
             $column->translateLabel();
@@ -44,6 +50,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Gate::policy(Role::class, RolePolicy::class);
         Model::unguard();
         Gate::before(function (Admin $user, string $ability) {
             return $user->isSuperAdmin() ? true : null;

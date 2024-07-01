@@ -50,6 +50,7 @@ return [
 
     'guard_names' => [
         'admin' => 'admin',
+        'web' => 'web',
     ],
 
     'toggleable_guard_names' => [
@@ -91,6 +92,7 @@ return [
 
         'guard_names' => [
             'admin',
+            'web',
         ],
 
         'permission_affixes' => [

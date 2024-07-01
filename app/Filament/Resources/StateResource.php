@@ -84,6 +84,7 @@ class StateResource extends Resource
     {
         return [
             'index' => Pages\ListStates::route('/'),
+            'create' => Pages\ListStates::route('/create'),
             'edit' => Pages\EditState::route('/{record}/edit'),
         ];
     }

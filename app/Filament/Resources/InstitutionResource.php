@@ -14,6 +14,9 @@ use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set as FilamentSet;
+use Filament\Infolists\Components\Fieldset;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -25,6 +28,24 @@ class InstitutionResource extends Resource
     protected static ?string $model = Institution::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-building-library';
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                TextEntry::make('name'),
+                TextEntry::make('type'),
+                TextEntry::make('majors.name'),
+                TextEntry::make('state.name'),
+                Fieldset::make('Manager')
+                    ->translateLabel()
+                    ->schema([
+                        TextEntry::make('manager_name'),
+                        TextEntry::make('manager_tel'),
+                    ]),
+
+            ]);
+    }
 
     public static function form(Form $form): Form
     {
@@ -66,7 +87,7 @@ class InstitutionResource extends Resource
                     ->relationship(
                         name: 'state',
                         titleAttribute: 'name',
-                        modifyQueryUsing: fn (Builder $query) => auth()->user()->isSuper() ? $query : $query->where('admin_id', auth()->id())),
+                        modifyQueryUsing: fn (Builder $query) => auth()->user()->isSuperAdmin() ? $query : $query->where('admin_id', auth()->id())),
                 Forms\Components\Fieldset::make('Directeur')
                     ->schema([
                         Forms\Components\TextInput::make('manager_name')
@@ -85,11 +106,16 @@ class InstitutionResource extends Resource
     {
         return $table
             ->modifyQueryUsing(function (Builder $query) {
-                return auth()->user()->isSuper()
-                    ? $query
-                    : $query->whereHas('state.admin', function (Builder $filter) {
+                if (auth()->user()->can('list only own institutions') && ! auth()->user()->isSuperAdmin()) {
+                    return $query->whereHas('state.admin', function (Builder $filter) {
                         $filter->where('id', auth()->id());
                     });
+                }
+                if (auth()->user()->cannot('list only own institutions')) {
+                    return $query;
+                }
+
+                return $query;
 
             })
             ->columns([
@@ -117,6 +143,7 @@ class InstitutionResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -138,6 +165,7 @@ class InstitutionResource extends Resource
         return [
             'index' => Pages\ListInstitutions::route('/'),
             'create' => Pages\CreateInstitution::route('/create'),
+            'view' => Pages\ViewInstitution::route('/{record}'),
             'edit' => Pages\EditInstitution::route('/{record}/edit'),
         ];
     }

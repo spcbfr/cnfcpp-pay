@@ -31,7 +31,7 @@ class EditInstitution extends EditRecord
                         Notification::make()
                             ->danger()
                             ->title('Failed to delete!')
-                            ->body('Institution has courses.')
+                            ->body('Institution has courses')
                             ->persistent()
                             ->send();
 

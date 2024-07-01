@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use Althinect\FilamentSpatieRolesPermissions\Resources\RoleResource;
+use App\Models\Admin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -23,6 +24,12 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        // $color = match (Admin::find(2)->getRoleNames()->first()) {
+        //     'Super Admin' => Color::Purple,
+        //     'Manager' => Color::Fuchsia,
+        //     default => Color::Fuchsia,
+        // };
+
         return $panel
             ->default()
             ->id('admin')

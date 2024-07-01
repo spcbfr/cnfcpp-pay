@@ -122,7 +122,7 @@ class CoursesRelationManager extends RelationManager
             ->recordTitleAttribute('name')
             ->columns([
                 Tables\Columns\TextColumn::make('type'),
-                Tables\Columns\TextColumn::make('major.name')->label('Specialite')->description(fn (Course $record) => 'Promo '.$record->promo),
+                Tables\Columns\TextColumn::make('major.name')->description(fn (Course $record) => 'Promo '.$record->promo),
                 Tables\Columns\TextColumn::make('year')->description(fn (Course $record) => 'Semester '.$record->semester)->label('Demarage De Session'),
                 Tables\Columns\TextColumn::make('cycle')->label('Duree'),
                 Tables\Columns\TextColumn::make('cost')->suffix('TND'),
@@ -132,21 +132,25 @@ class CoursesRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
+                    ->authorize(auth()->user()->can('create course'))
                     ->after(function (Livewire $livewire) {
                         $livewire->dispatch('refreshInstitution');
                     }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
+                    ->authorize(auth()->user()->can('update own course') || auth()->user()->can('update course'))
                     ->after(function (Livewire $livewire) {
                         $livewire->dispatch('refreshInstitution');
                     }),
                 Tables\Actions\DeleteAction::make()
+                    ->authorize(auth()->user()->can('delete own course') || auth()->user()->can('delete course'))
                     ->after(function (Livewire $livewire) {
                         $livewire->dispatch('refreshInstitution');
                     }),
 
                 Action::make('details')
+                    ->authorize(auth()->user()->can('update own course') || auth()->user()->can('update course'))
                     ->label('Navigate')
                     ->url(fn ($record): string => route('filament.admin.resources.courses.edit', ['record' => $record]))
                     ->icon('heroicon-s-eye')

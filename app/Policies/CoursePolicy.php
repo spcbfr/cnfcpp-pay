@@ -7,17 +7,12 @@ use App\Models\Course;
 
 class CoursePolicy
 {
-    public function before(User $user): ?bool
-    {
-        return $user->isSuper() ? true : null;
-    }
-
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return true;
+        return $user->can('view-any course');
     }
 
     /**
@@ -25,7 +20,12 @@ class CoursePolicy
      */
     public function view(User $user, Course $course): bool
     {
-        //
+
+        if ($user->can('view own course')) {
+            return $course->institution->state?->admin?->id === $user->id;
+        }
+
+        return $user->can('view course');
     }
 
     /**
@@ -33,7 +33,7 @@ class CoursePolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        return $user->can('create course');
     }
 
     /**
@@ -41,7 +41,14 @@ class CoursePolicy
      */
     public function update(User $user, Course $course): bool
     {
-        return $course->institution->state?->admin?->id === $user->id;
+        if ($user->can('update course')) {
+            return true;
+        }
+        if ($user->can('update own course')) {
+            return $course->institution->state?->admin?->id === $user->id;
+        }
+
+        return false;
     }
 
     /**
@@ -49,7 +56,16 @@ class CoursePolicy
      */
     public function delete(User $user, Course $course): bool
     {
-        return $course->institution->state?->admin?->id === $user->id;
+
+        if ($user->can('delete course')) {
+            return true;
+        }
+
+        if ($user->can('delete own course')) {
+            return $course->institution->state?->admin?->id === $user->id;
+        }
+
+        return false;
     }
 
     /**
@@ -57,7 +73,12 @@ class CoursePolicy
      */
     public function restore(User $user, Course $course): bool
     {
-        //
+
+        if ($user->can('restore own institution')) {
+            return $course->institution->state?->admin?->id === $user->id;
+        }
+
+        return $user->can('restore course');
     }
 
     /**
@@ -65,6 +86,10 @@ class CoursePolicy
      */
     public function forceDelete(User $user, Course $course): bool
     {
-        //
+        if ($user->can('force-delete own institution')) {
+            return $course->institution->state?->admin?->id === $user->id;
+        }
+
+        return $user->can('force-delete course');
     }
 }

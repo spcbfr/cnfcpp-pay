@@ -10,8 +10,11 @@ use App\Models\Major;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -26,6 +29,19 @@ class CourseResource extends Resource
     protected static ?string $modelLabel = 'Session';
 
     protected static ?string $navigationBadgeTooltip = 'The number of sessions';
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                TextEntry::make('type'),
+                TextEntry::make('major.name'),
+                TextEntry::make('promo')->prefix('PR ')->badge(),
+                TextEntry::make('cycle'),
+                TextEntry::make('cost')->money('TND'),
+                TextEntry::make('year')->label('Debut de Session')->suffix(fn (?Model $record) => '-S'.$record->semester),
+            ])->inlineLabel();
+    }
 
     public static function form(Form $form): Form
     {
@@ -123,20 +139,28 @@ class CourseResource extends Resource
     {
         return $table
             ->modifyQueryUsing(function (Builder $query) {
-                return auth()->user()->isSuper()
-                    ? $query
-                    : $query->whereHas('institution.state.admin', function (Builder $filter) {
+                if (auth()->user()->can('list only own courses') && ! auth()->user()->isSuperAdmin()) {
+                    return $query->whereHas('institution.state.admin', function (Builder $filter) {
                         $filter->where('id', auth()->id());
                     });
+                }
+                if (auth()->user()->cannot('list only own courses')) {
+                    return $query;
+                }
+
+                return $query;
             })
             ->columns([
-                TextColumn::make('type'),
-                TextColumn::make('major.name'),
+                TextColumn::make('type')
+                    ->searchable(),
+                TextColumn::make('major.name')
+                    ->searchable(),
 
                 Tables\Columns\TextColumn::make('cost')
                     ->money('TND')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('institution.name'),
+                Tables\Columns\TextColumn::make('institution.name')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -146,6 +170,7 @@ class CourseResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('year')
+                    ->searchable()
                     ->numeric(thousandsSeparator: '')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('semester')
@@ -153,10 +178,10 @@ class CourseResource extends Resource
                     ->numeric(),
             ])
             ->filters([
-                //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
@@ -175,6 +200,7 @@ class CourseResource extends Resource
         return [
             'index' => Pages\ListCourses::route('/'),
             // 'create' => Pages\CreateCourse::route('/create'),
+            'view' => Pages\ViewCourse::route('/{record}'),
             'edit' => Pages\EditCourse::route('/{record}/edit'),
         ];
     }

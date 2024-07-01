@@ -4,10 +4,11 @@ namespace Database\Seeders;
 
 use App\Models\Admin;
 use App\Models\State;
-use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Artisan;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\App;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
@@ -17,29 +18,45 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        Artisan::call('permissions:sync');
+        $permissions = [
+            'list only own institutions',
+            'list only own courses',
+            'view own institution',
+            'update own institution',
+            'delete own institution',
+            'view own course',
+            'update own course',
+            'delete own course',
+        ];
+        collect($permissions)->each(fn ($permission) => Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'admin']));
 
         if (App::isLocal()) {
-            Admin::create([
+            Admin::firstOrCreate([
                 'name' => 'Esseyed',
                 'email' => 'esseyed@gmail.com',
                 'tel' => '0000000000',
                 'region_name' => 'IPST Ben Arous',
+            ], [
                 'password' => 'admin',
-                'is_super' => false,
             ]);
         }
 
-        $admin = Admin::create([
+        $admin = Admin::firstOrCreate([
             'name' => 'Admin',
             'email' => 'admin@admin.com',
             'tel' => '0000000000',
             'region_name' => 'All',
+        ], [
             'password' => 'admin',
-            'is_super' => true,
         ]);
-        $super = Role::create(['name' => 'Super Admin']);
+        $super = Role::firstOrCreate(['name' => 'Super Admin', 'guard_name' => 'admin']);
         $admin->assignRole($super);
+
+        $managerRole = Role::firstOrCreate(['name' => 'Manager', 'guard_name' => 'admin']);
+        $managerRole->givePermissionTo('create course', 'list only own courses', 'update course', 'view-any course', 'view course');
+        $managerRole->givePermissionTo('create user', 'update user', 'view-any user');
+        $managerRole->givePermissionTo('create institution', 'update own institution', 'delete own institution', 'list only own institutions', 'view-any institution');
 
         $states = [
             ['name' => 'Tunis'],
@@ -69,7 +86,7 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($states as $state) {
-            State::create($state);
+            State::firstOrCreate($state);
         }
     }
 }

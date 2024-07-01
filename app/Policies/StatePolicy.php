@@ -12,7 +12,7 @@ class StatePolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isSuper();
+        return $user->can('view-any state');
     }
 
     /**
@@ -20,7 +20,7 @@ class StatePolicy
      */
     public function view(User $user, State $state): bool
     {
-        //
+        return $user->can('view state');
     }
 
     /**
@@ -28,7 +28,7 @@ class StatePolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->can('create state');
     }
 
     /**
@@ -36,7 +36,7 @@ class StatePolicy
      */
     public function update(User $user, State $state): bool
     {
-        return $user->isSuper();
+        return $user->can('update state');
     }
 
     /**
@@ -44,6 +44,22 @@ class StatePolicy
      */
     public function delete(User $user, State $state): bool
     {
-        return false;
+        return $user->can('delete state');
+    }
+
+    /**
+     * Determine whether the user can restore the model.
+     */
+    public function restore(User $user, State $state): bool
+    {
+        return $user->can('restore state');
+    }
+
+    /**
+     * Determine whether the user can permanently delete the model.
+     */
+    public function forceDelete(User $user, State $state): bool
+    {
+        return $user->can('force-delete state');
     }
 }
