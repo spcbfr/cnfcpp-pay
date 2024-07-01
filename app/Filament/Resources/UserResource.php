@@ -32,6 +32,7 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('last_name')
                     ->required(),
                 Forms\Components\TextInput::make('cin')
+                    ->unique(ignoreRecord: true)
                     ->label('CIN')
                     ->numeric()
                     ->length(8)

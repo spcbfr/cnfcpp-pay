@@ -2,17 +2,26 @@
 
 namespace App\Models;
 
+use Althinect\FilamentSpatieRolesPermissions\Concerns\HasSuperAdmin;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 class Admin extends User implements FilamentUser
 {
     use HasFactory;
+    use HasRoles;
+    use HasSuperAdmin;
     use Notifiable;
+
+    public function guardName()
+    {
+        return ['admin'];
+    }
 
     public function canAccessPanel(Panel $panel): bool
     {

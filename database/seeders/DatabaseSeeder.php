@@ -8,6 +8,7 @@ use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\App;
+use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
@@ -29,7 +30,7 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        Admin::create([
+        $admin = Admin::create([
             'name' => 'Admin',
             'email' => 'admin@admin.com',
             'tel' => '0000000000',
@@ -37,6 +38,8 @@ class DatabaseSeeder extends Seeder
             'password' => 'admin',
             'is_super' => true,
         ]);
+        $super = Role::create(['name' => 'Super Admin']);
+        $admin->assignRole($super);
 
         $states = [
             ['name' => 'Tunis'],

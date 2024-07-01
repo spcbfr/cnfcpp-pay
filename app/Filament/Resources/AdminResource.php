@@ -6,11 +6,11 @@ use App\Filament\Resources\AdminResource\Pages;
 use App\Models\Admin;
 use App\RedirectsToIndex;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 
 class AdminResource extends Resource
 {
@@ -43,12 +43,10 @@ class AdminResource extends Resource
                     ->required()
                     ->dehydrated(fn ($state) => filled($state))
                     ->required(fn (string $context): bool => $context === 'create'),
-                Forms\Components\ToggleButtons::make('can_edit')
-                    ->hint('Permet aux admins de gérer leurs institutions et sessions')
-                    ->default(true)
-                    ->inline(true)
-                    ->boolean()
-                    ->required(),
+                Select::make('roles')
+                    ->multiple()
+                    ->relationship('roles', 'name')
+                    ->preload(),
 
             ]);
     }
@@ -82,9 +80,6 @@ class AdminResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
-            ->modifyQueryUsing(
-                fn (Builder $query) => $query->where('is_super', false),
-            )
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),

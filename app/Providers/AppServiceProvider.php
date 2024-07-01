@@ -8,6 +8,7 @@ use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
 use Filament\Tables\Columns\Column;
 use Filament\Tables\Filters\Filter;
+use Gate;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Routing\Router;
@@ -44,5 +45,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Model::unguard();
+        Gate::before(function (Admin $user, string $ability) {
+            return $user->isSuperAdmin() ? true : null;
+        });
     }
 }
