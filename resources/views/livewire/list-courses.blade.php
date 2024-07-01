@@ -18,6 +18,7 @@
             </thead>
 
             <tbody>
+            @if(count(auth()->user()->courses)> 0)
                 @foreach (auth()->user()->courses as $course)
                     <tr>
                         <td>{{ $course->type }}</td>
@@ -32,6 +33,11 @@
 
                     </tr>
                 @endforeach
+            @else
+                    <tr>
+                        <td colspan="5">Aucun cours a afficher</td>
+                    </tr>
+            @endif
             </tbody>
         </table>
     </div>
